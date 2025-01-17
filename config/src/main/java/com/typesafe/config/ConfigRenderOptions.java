@@ -22,15 +22,16 @@ public final class ConfigRenderOptions {
     private final boolean formatted;
     private final boolean json;
     private final boolean showEnvVariableValues;
-    private final String commentPrefix = "//";
+    private final String commentPrefix;
 
     private ConfigRenderOptions(boolean originComments, boolean comments, boolean formatted,
-            boolean json, boolean showEnvVariableValues) {
+            boolean json, boolean showEnvVariableValues, String commentPrefix) {
         this.originComments = originComments;
         this.comments = comments;
         this.formatted = formatted;
         this.json = json;
         this.showEnvVariableValues = showEnvVariableValues;
+        this.commentPrefix = commentPrefix;
     }
 
     /**
@@ -41,7 +42,7 @@ public final class ConfigRenderOptions {
      * @return the default render options
      */
     public static ConfigRenderOptions defaults() {
-        return new ConfigRenderOptions(true, true, true, true, true);
+        return new ConfigRenderOptions(true, true, true, true, true, "#");
     }
 
     /**
@@ -51,7 +52,7 @@ public final class ConfigRenderOptions {
      * @return the concise render options
      */
     public static ConfigRenderOptions concise() {
-        return new ConfigRenderOptions(false, false, false, true, true);
+        return new ConfigRenderOptions(false, false, false, true, true, "#");
     }
 
     /**
@@ -67,7 +68,7 @@ public final class ConfigRenderOptions {
         if (value == comments)
             return this;
         else
-            return new ConfigRenderOptions(originComments, value, formatted, json, showEnvVariableValues);
+            return new ConfigRenderOptions(originComments, value, formatted, json, showEnvVariableValues, commentPrefix);
     }
 
     /**
@@ -104,7 +105,7 @@ public final class ConfigRenderOptions {
         if (value == originComments)
             return this;
         else
-            return new ConfigRenderOptions(value, comments, formatted, json, showEnvVariableValues);
+            return new ConfigRenderOptions(value, comments, formatted, json, showEnvVariableValues, commentPrefix);
     }
 
     /**
@@ -129,7 +130,7 @@ public final class ConfigRenderOptions {
         if (value == formatted)
             return this;
         else
-            return new ConfigRenderOptions(originComments, comments, value, json, showEnvVariableValues);
+            return new ConfigRenderOptions(originComments, comments, value, json, showEnvVariableValues, commentPrefix);
     }
 
     /**
@@ -157,7 +158,7 @@ public final class ConfigRenderOptions {
         if (value == json)
             return this;
         else
-            return new ConfigRenderOptions(originComments, comments, formatted, value, showEnvVariableValues);
+            return new ConfigRenderOptions(originComments, comments, formatted, value, showEnvVariableValues, commentPrefix);
     }
 
     /**
@@ -172,7 +173,14 @@ public final class ConfigRenderOptions {
         if (value == showEnvVariableValues)
             return this;
         else
-            return new ConfigRenderOptions(originComments, comments, formatted, json, value);
+            return new ConfigRenderOptions(originComments, comments, formatted, json, value, commentPrefix);
+    }
+
+    public ConfigRenderOptions setCommentPrefix(String value) {
+        if (value.equals(commentPrefix))
+            return this;
+        else
+            return new ConfigRenderOptions(originComments, comments, formatted, json, showEnvVariableValues, value);
     }
 
     /**
