@@ -3,19 +3,6 @@
  */
 package com.typesafe.config.impl;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.net.URL;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.Callable;
-
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigIncluder;
@@ -26,6 +13,19 @@ import com.typesafe.config.ConfigParseOptions;
 import com.typesafe.config.ConfigParseable;
 import com.typesafe.config.ConfigValue;
 import com.typesafe.config.impl.SimpleIncluder.NameSource;
+
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.net.URL;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.Callable;
 
 /**
  * Internal implementation detail, not ABI stable, do not touch.
@@ -42,7 +42,7 @@ public class ConfigImpl {
         LoaderCache() {
             this.currentSystemProperties = null;
             this.currentLoader = new WeakReference<ClassLoader>(null);
-            this.cache = new HashMap<String, Config>();
+            this.cache = new LinkedHashMap<String, Config>();
         }
 
         // for now, caching as long as the loader remains the same,
@@ -190,6 +190,11 @@ public class ConfigImpl {
             return SimpleConfigOrigin.newSimple(originDescription);
     }
 
+    public static ConfigValue fromAnyRef(Object object, String originDescription, List<String> comments) {
+        ConfigOrigin origin = valueOrigin(originDescription).withComments(comments);
+        return fromAnyRef(object, origin, FromMapMode.KEYS_ARE_KEYS);
+    }
+
     public static ConfigValue fromAnyRef(Object object, String originDescription) {
         ConfigOrigin origin = valueOrigin(originDescription);
         return fromAnyRef(object, origin, FromMapMode.KEYS_ARE_KEYS);
@@ -248,7 +253,7 @@ public class ConfigImpl {
                 return emptyObject(origin);
 
             if (mapMode == FromMapMode.KEYS_ARE_KEYS) {
-                Map<String, AbstractConfigValue> values = new HashMap<String, AbstractConfigValue>();
+                Map<String, AbstractConfigValue> values = new LinkedHashMap<String, AbstractConfigValue>();
                 for (Map.Entry<?, ?> entry : ((Map<?, ?>) object).entrySet()) {
                     Object key = entry.getKey();
                     if (!(key instanceof String))
@@ -370,8 +375,8 @@ public class ConfigImpl {
 
 
     private static AbstractConfigObject loadEnvVariablesOverrides() {
-        Map<String, String> env = new HashMap(System.getenv());
-        Map<String, String> result = new HashMap();
+        Map<String, String> env = new LinkedHashMap(System.getenv());
+        Map<String, String> result = new LinkedHashMap();
 
         for (String key : env.keySet()) {
             if (key.startsWith(ENV_VAR_OVERRIDE_PREFIX)) {
@@ -448,7 +453,7 @@ public class ConfigImpl {
         private static String SUBSTITUTIONS = "substitutions";
 
         private static Map<String, Boolean> loadDiagnostics() {
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
+            Map<String, Boolean> result = new LinkedHashMap<String, Boolean>();
             result.put(LOADS, false);
             result.put(SUBSTITUTIONS, false);
 

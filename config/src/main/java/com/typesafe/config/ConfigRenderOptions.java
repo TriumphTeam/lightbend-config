@@ -22,6 +22,7 @@ public final class ConfigRenderOptions {
     private final boolean formatted;
     private final boolean json;
     private final boolean showEnvVariableValues;
+    private final String commentPrefix = "//";
 
     private ConfigRenderOptions(boolean originComments, boolean comments, boolean formatted,
             boolean json, boolean showEnvVariableValues) {
@@ -77,6 +78,10 @@ public final class ConfigRenderOptions {
      */
     public boolean getComments() {
         return comments;
+    }
+
+    public String getCommentPrefix() {
+        return commentPrefix;
     }
 
     /**

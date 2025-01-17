@@ -3,6 +3,7 @@
  */
 package com.typesafe.config;
 
+import java.util.List;
 import java.util.Map;
 
 import com.typesafe.config.impl.ConfigImpl;
@@ -70,6 +71,10 @@ public final class ConfigValueFactory {
      */
     public static ConfigValue fromAnyRef(Object object, String originDescription) {
         return ConfigImpl.fromAnyRef(object, originDescription);
+    }
+
+    public static ConfigValue fromAnyRef(Object object, String originDescription, List<String> comments) {
+        return ConfigImpl.fromAnyRef(object, originDescription, comments);
     }
 
     /**

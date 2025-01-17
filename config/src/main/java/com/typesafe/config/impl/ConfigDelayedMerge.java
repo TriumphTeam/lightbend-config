@@ -307,9 +307,17 @@ final class ConfigDelayedMerge extends AbstractConfigValue implements Unmergeabl
                 sb.append(v.origin().description());
                 sb.append("\n");
 
+                final String commentPrefix = options.getCommentPrefix();
                 for (String comment : v.origin().comments()) {
+
+                    if (comment.isEmpty() || comment.equals("\n")) {
+                        sb.append("\n");
+                        continue;
+                    }
+
                     indent(sb, indent, options);
-                    sb.append("# ");
+                    sb.append(commentPrefix);
+                    sb.append(" ");
                     sb.append(comment);
                     sb.append("\n");
                 }

@@ -222,9 +222,17 @@ final class SimpleConfigList extends AbstractConfigValue implements ConfigList, 
                     }
                 }
                 if (options.getComments()) {
+                    final String commentPrefix = options.getCommentPrefix();
                     for (String comment : v.origin().comments()) {
+
+                        if (comment.isEmpty() || comment.equals("\n")) {
+                            sb.append("\n");
+                            continue;
+                        }
+
                         indent(sb, indent + 1, options);
-                        sb.append("# ");
+                        sb.append(commentPrefix);
+                        sb.append(" ");
                         sb.append(comment);
                         sb.append("\n");
                     }
